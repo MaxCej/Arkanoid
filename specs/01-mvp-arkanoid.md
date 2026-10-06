@@ -1,6 +1,6 @@
 # SPEC 01 — Playable Arkanoid MVP
 
-> **Status:** Approved 
+> **Status:** Implemented
 > **Depends on:** none
 > **Date:** 2026-10-06
 > **Objective:** Build a playable single-level Arkanoid in plain HTML/JS, with lives, score and win/lose screens, using the existing spritesheet and sounds.
@@ -66,8 +66,11 @@ const BRICK_OFFSET_Y = 80;
 const START_LIVES = 3;
 const MAX_DT = 1 / 30;           // clamp for delta time, in seconds
 
-// One color per row, top to bottom.
-const LEVEL_ROWS = ['gray', 'red', 'yellow', 'cyan', 'magenta', 'green'];
+// One sprite key per row, top to bottom. Some keys in assets/spritesheet.js
+// do not match the color they draw: 'green' draws light blue, 'cyan' draws
+// green, 'magenta' draws violet. On screen: gray, red, yellow, light blue,
+// violet, green.
+const LEVEL_ROWS = ['gray', 'red', 'yellow', 'green', 'magenta', 'cyan'];
 const BRICK_POINTS = { default: 10, gray: 20 };
 const BRICK_HITS = { default: 1, gray: 2 };
 ```
@@ -112,7 +115,7 @@ Conventions:
 
 - [ ] Opening `index.html` (via `file://` or any static server) shows the game with no errors in the console.
 - [ ] The canvas is 800x600 and centered horizontally in the window.
-- [ ] 84 bricks are visible: 6 rows x 14 columns, with rows gray, red, yellow, cyan, magenta, green from top to bottom.
+- [ ] 84 bricks are visible: 6 rows x 14 columns, with rows that look gray, red, yellow, light blue, violet, green from top to bottom.
 - [ ] The Start screen shows a prompt to press Space or click. The ball rests on the paddle.
 - [ ] Arrow keys and A/D move the paddle. Moving the mouse over the canvas also moves it. The paddle never goes outside the canvas.
 - [ ] Space or click launches the ball from the paddle.
@@ -138,7 +141,8 @@ Conventions:
 - **Yes:** 4 source files (`config`, `input`, `entities`, `game`). Each file stays small without over-fragmenting the code.
 - **Yes:** fixed 800x600 landscape canvas. Chosen over 480x640 portrait and over window scaling, which would complicate mouse mapping.
 - **Yes:** bricks drawn at 48x24 (1.5x the 32x16 sprites), 14 columns centered with a 64 px margin. Fills the 800 px width cleanly.
-- **Yes:** 6 rows with one color each. `hotpink` is left unused for now.
+- **Yes:** 6 rows with one color each. `hotpink` (drawn orange) is left unused for now.
+- **Yes:** `LEVEL_ROWS` picks sprite keys by how they look on screen, because the `cyan` and `green` block keys in `assets/spritesheet.js` are swapped and `magenta` draws violet (the sheet has no magenta). Fixing the labels in `spritesheet.js` is left for a later spec.
 - **Yes:** gray bricks take 2 hits. **No:** indestructible gray bricks. Those would complicate the win condition.
 - **Yes:** flat scoring (10 / 20). **No:** points by row. Simpler to verify.
 - **Yes:** delta time in px/s with `dt` clamped to 1/30 s. The game runs at the same speed on any refresh rate and avoids large jumps after tab switches.
