@@ -1,6 +1,6 @@
 # SPEC 01 — Playable Arkanoid MVP
 
-> **Status:** Draft
+> **Status:** Approved 
 > **Depends on:** none
 > **Date:** 2026-10-06
 > **Objective:** Build a playable single-level Arkanoid in plain HTML/JS, with lives, score and win/lose screens, using the existing spritesheet and sounds.
