@@ -4,15 +4,16 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 
 const game = {
-  state: 'start',   // 'start' | 'playing' | 'paused' | 'win' | 'gameover'
+  state: 'start',   // 'start' | 'playing' | 'paused' | 'levelclear' | 'win' | 'gameover'
+  level: 1,         // 1-based index into LEVELS
   score: 0,
   lives: START_LIVES,
-  paddle: createPaddle(),
+  paddle: null,
   ball: null,
-  bricks: createBricks(),
+  bricks: [],
   explosions: [],   // { x, y, w, h, color, t }, t = elapsed ms
 };
-game.ball = createBall(game.paddle);
+startLevel(1);
 
 let lastTime = null;
 
@@ -35,12 +36,21 @@ function breakBrick(brick) {
   game.explosions.push({ x: brick.x, y: brick.y, w: brick.w, h: brick.h, color: brick.color, t: 0 });
 }
 
+// Loads level n (1-based): its bricks, a centered paddle and a ball resting on
+// it. Score and lives are kept. The ball starts faster on each level.
+function startLevel(n) {
+  game.level = n;
+  game.bricks = createBricks(n);
+  game.explosions = [];
+  game.paddle = createPaddle();
+  game.ball = createBall(game.paddle);
+  game.ball.speed = BALL_SPEED_START + LEVEL_SPEED_STEP * (n - 1);
+}
+
 function newGame() {
   game.score = 0;
   game.lives = START_LIVES;
-  game.bricks = createBricks();
-  game.explosions = [];
-  game.ball = createBall(game.paddle);
+  startLevel(1);
 }
 
 function updatePlaying(dt, launch) {
@@ -59,7 +69,7 @@ function updatePlaying(dt, launch) {
     resetBall(game.ball, game.paddle);
     if (game.lives === 0) game.state = 'gameover';
   } else if (game.bricks.every((b) => !b.alive)) {
-    game.state = 'win';
+    game.state = game.level < LEVELS.length ? 'levelclear' : 'win';
   }
 }
 
@@ -79,6 +89,12 @@ function update(dt) {
   switch (game.state) {
     case 'start':
       if (launch) game.state = 'playing';
+      break;
+    case 'levelclear':
+      if (launch) {
+        startLevel(game.level + 1);
+        game.state = 'playing';
+      }
       break;
     case 'win':
     case 'gameover':
@@ -113,6 +129,9 @@ function drawHud() {
   ctx.textAlign = 'left';
   ctx.fillText(`SCORE ${game.score}`, 16, HUD_H / 2);
 
+  ctx.textAlign = 'center';
+  ctx.fillText(`LEVEL ${game.level}/${LEVELS.length}`, CANVAS_W / 2, HUD_H / 2);
+
   ctx.textAlign = 'right';
   ctx.fillText(`LIVES ${game.lives}`, CANVAS_W - 16, HUD_H / 2);
 }
@@ -120,6 +139,11 @@ function drawHud() {
 const OVERLAYS = {
   start: () => ['ARKANOID', 'Press Space or click to start'],
   paused: () => ['PAUSED', 'Press P or Esc to resume'],
+  levelclear: () => [
+    `LEVEL ${game.level} CLEAR`,
+    `Next: LEVEL ${game.level + 1} — ${LEVELS[game.level].name.toUpperCase()}`,
+    'Press Space or click to continue',
+  ],
   win: () => ['YOU WIN!', `Final score: ${game.score}`, 'Press Space or click to play again'],
   gameover: () => ['GAME OVER', `Final score: ${game.score}`, 'Press Space or click to play again'],
 };

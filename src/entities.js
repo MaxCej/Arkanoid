@@ -1,9 +1,25 @@
 // Bricks, paddle and ball.
 
-function createBricks() {
+// Builds the bricks of a level from its ASCII grid. levelNumber is 1-based.
+// Throws on a malformed grid, so a typo fails loudly instead of shifting bricks.
+function createBricks(levelNumber) {
+  const rows = LEVELS[levelNumber - 1].rows;
+  if (rows.length < 1 || rows.length > MAX_LEVEL_ROWS) {
+    throw new Error(`Level ${levelNumber}: expected 1-${MAX_LEVEL_ROWS} rows, got ${rows.length}`);
+  }
+
   const bricks = [];
-  LEVEL_ROWS.forEach((color, row) => {
+  rows.forEach((line, row) => {
+    if (line.length !== BRICK_COLS) {
+      throw new Error(`Level ${levelNumber}, row ${row}: expected ${BRICK_COLS} chars, got ${line.length}`);
+    }
     for (let col = 0; col < BRICK_COLS; col++) {
+      const ch = line[col];
+      if (ch === EMPTY_CHAR) continue;
+      const color = BRICK_CHARS[ch];
+      if (!color) {
+        throw new Error(`Level ${levelNumber}, row ${row}: unknown char '${ch}' at column ${col}`);
+      }
       bricks.push({
         x: BRICK_OFFSET_X + col * BRICK_W,
         y: BRICK_OFFSET_Y + row * BRICK_H,
