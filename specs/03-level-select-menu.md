@@ -1,6 +1,6 @@
 # SPEC 03 — Level select menu
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01, SPEC 02
 > **Date:** 2026-10-06
 > **Objective:** Replace the Start screen with a main menu where the player picks the starting level, and turn the pause screen into a menu that can also pick a level or return to the main menu.
