@@ -20,6 +20,7 @@
 - Picking a level from either menu starts a new run on that level, with score 0 and 3 lives. The ball rests on the centered paddle until the next Space, Enter or click.
 - `MAIN MENU` abandons the run without confirmation.
 - Space, Enter or click on the Win and Game Over screens returns to the main menu. The highlight is on the level the run started at.
+- The Win and Game Over prompt reads `Press Space, Enter or click for the menu`.
 - Enter is added as a launch key everywhere Space works today: launching the ball, continuing from `levelclear`, and leaving the Win and Game Over screens.
 - All 5 levels can always be picked.
 
@@ -136,6 +137,7 @@ State transitions:
 - [ ] P and Esc do nothing in the main menu.
 - [ ] Space, Enter or click on the Win screen shows the main menu with the highlight on the level the run started at.
 - [ ] Space, Enter or click on the Game Over screen shows the main menu with the highlight on the level the run started at.
+- [ ] The Win and Game Over screens show the prompt `Press Space, Enter or click for the menu`.
 - [ ] Clicking a menu row never launches the ball in the same frame.
 
 ## Decisions
