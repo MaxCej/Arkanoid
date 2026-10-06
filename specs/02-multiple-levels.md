@@ -1,6 +1,6 @@
 # SPEC 02 — Multiple levels
 
-> **Status:** Approved
+> **Status:** Implemented
 > **Depends on:** SPEC 01
 > **Date:** 2026-10-06
 > **Objective:** Replace the single hardcoded brick layout with 5 hand-designed levels, defined as ASCII grids and played in sequence with score and lives carried over.
